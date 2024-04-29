@@ -1,0 +1,25 @@
+version: '3.7'
+services:
+  backend-dev:
+    container_name: alpaca-tinder-dev-backend
+    image: erasme/alpaca-tinder-backend:dev
+    build: ../backend/
+    ports:
+      - "${BACKEND_PORT:-4002}:8090"
+    volumes:
+      - ../backend/pb_migrations/:/pb_migrations
+      - ../backend/pb_data/:/pb_data/
+  front-dev:
+    image: erasme/alpaca-tinder-tenant:dev
+    container_name: alpaca-tinder-dev-frontend
+    build: 
+      context: ../frontend/
+      target: "dev"
+    volumes:
+      - ../frontend/src/:/app/src
+    ports:
+      - "${FRONTEND_PORT:-4001}:5173" #keep same port to avoid Cross scripting errors
+    env_file:
+      - .env
+    
+    
