@@ -29,7 +29,7 @@ with open("test.json", "r") as file:
     questions = json.load(file)
 
 # Create a dataset record
-dataset = create_dataset("test")
+dataset = create_dataset("Funny dataset")
 
 print(dataset.id)
 # Process each question in the JSON file

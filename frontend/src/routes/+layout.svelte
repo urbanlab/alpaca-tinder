@@ -1,6 +1,6 @@
 <script>
 	import '../app.css';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import {currentUser, watchUserChange } from '../lib/store';
 	import Notifications from '$lib/components/misc/Notifications.svelte';
 	import { goto } from '$app/navigation';
@@ -11,8 +11,9 @@
 		if (!$currentUser) {
 			goto('/account/login');
 		}
-		watchUserChange();
+		await watchUserChange();
 	});
+
 
 </script>
 
