@@ -60,9 +60,9 @@
             <div class="chat-bubble">{currentConversation.data.output}</div>
             </div>
         </div>
-        <div class="flex">
-            <button class="p-4 rounded-full bg-primary" on:click={upVote}>Upvote</button>
-            <button class=" p-4 rounded-full bg-primary" on:click={downVote}>Downvote</button>
+        <div class="flex justify-center item-center mt-4">
+            <button class="p-4 mr-2 rounded-full bg-primary" on:click={upVote}>👍</button>
+            <button class=" p-4 rounded-full bg-primary" on:click={downVote}>👎</button>
         </div>
     {/if}
 </section>
