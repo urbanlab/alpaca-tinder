@@ -6,6 +6,8 @@
 	import { goto } from '$app/navigation';
 	import { logout } from '../lib/utils/auth';
 	import VerifyBanner from '../lib/components/account/VerifyBanner.svelte';
+	import Fa from 'svelte-fa';
+	import { faBars, faHamburger } from '@fortawesome/free-solid-svg-icons';
 
 	onMount(() => {
 		if (!$currentUser) {
@@ -25,10 +27,10 @@
 			<input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
 			<div class="drawer-content flex flex-col">
 				<div class="flex justify-between p-1">
-			  <label for="my-drawer-2" class="btn btn-primary drawer-button lg:hidden">Open drawer</label>
+			  <label for="my-drawer-2" class="absolute btn btn-primary drawer-button lg:hidden"><Fa icon={faBars}/></label>
 					 
 				</div>
-				<div class="p-4  h-full">
+				<div class="h-full">
 					<VerifyBanner />
 					<slot />
 				</div>

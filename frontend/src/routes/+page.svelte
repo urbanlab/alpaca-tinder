@@ -66,44 +66,49 @@
 </script>
 
 <section>
-	<Title text="Evaluation" />
-    {#if datasets}
-        <select class="select select-bordered w-full max-w-xs" bind:value={datasetIndex} on:change={changeDataset}>
-            {#each datasets as dataset, index}
-            {#if datasetIndex === index}
-                <option value={index} selected>{dataset.name}</option>
-            {:else}
-                <option value={index}>{dataset.name}</option>
-            {/if}
-            {/each}
-        </select>
-    {/if}
-    {#if currentConversation}
-        <div>
-                 <div class="chat chat-start">
-            <div class="chat-image avatar placeholder">
-                <div class="bg-neutral text-neutral-content rounded-full w-12">
-                    <span>U</span>
-                </div>
-            </div> 
-            <div class="chat-header">
-                Utilisateurice
-            </div>
-            <div class="chat-bubble">{currentConversation.data.instruction}</div>
-            </div>
-            <div class="chat chat-end">
-            <div class="chat-image avatar placeholder">
-                <div class="bg-neutral text-neutral-content rounded-full w-12">
-                    <span>CB</span>
-                </div>
+    <div class="p-4">
+        <Title text="Evaluation" />
+        {#if datasets}
+        <label class="divider">Choisissez un dataset</label>
+            <select class="select select-bordered w-full max-w-xs" bind:value={datasetIndex} on:change={changeDataset}>
+                {#each datasets as dataset, index}
+                {#if datasetIndex === index}
+                    <option value={index} selected>{dataset.name}</option>
+                {:else}
+                    <option value={index}>{dataset.name}</option>
+                {/if}
+                {/each}
+            </select>
+        {/if}
+        {#if currentConversation}
+            <div>
+                    <div class="chat chat-start">
+                <div class="chat-image avatar placeholder">
+                    <div class="bg-neutral text-neutral-content rounded-full w-12">
+                        <span>U</span>
+                    </div>
                 </div> 
-            <div class="chat-header">
-                Chatbotmet
+                <div class="chat-header">
+                    Utilisateurice
+                </div>
+                <div class="chat-bubble">{currentConversation.data.instruction}</div>
+                </div>
+                <div class="chat chat-end">
+                <div class="chat-image avatar placeholder">
+                    <div class="bg-neutral text-neutral-content rounded-full w-12">
+                        <span>CB</span>
+                    </div>
+                    </div> 
+                <div class="chat-header">
+                    Chatbotmet
+                </div>
+                <div class="chat-bubble">{currentConversation.data.output}</div>
+                </div>
             </div>
-            <div class="chat-bubble">{currentConversation.data.output}</div>
-            </div>
-        </div>
-        <div class="mt-24"></div>
+            <div class="mt-36"></div>
+        {/if}
+    </div>
+    {#if datasets}
         <div class="fixed bottom-0 w-full bg-base-300 pb-4">
             <div class="flex justify-center item-center mt-4">
                 <button class="p-4 mr-2 rounded-full bg-success" on:click={async () => upVote()}>👍</button>
