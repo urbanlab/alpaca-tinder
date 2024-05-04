@@ -2,7 +2,7 @@
     import { onMount } from 'svelte';
 	import Title from '../lib/components/misc/Title.svelte';
 	import { currentUser, pb } from '$lib/store';
-	import type { ConversationsResponse, DatasetsResponse } from '$lib/types/pocketbase-types';
+	import type { ConversationsResponse, DatasetsResponse, UsersRecord } from '$lib/types/pocketbase-types';
 
 
     let datasets: Array<DatasetsResponse>;
@@ -11,12 +11,13 @@
     let convIndex = 0;
 	let datasetIndex = 0;
     let currentDataset:DatasetsResponse;
-
+    let lastCurrentUser:UsersRecord;
     let userSeenLength = 0;
     onMount(async () => {
         datasets = await pb.collection("datasets").getFullList({expand: "conversations"});
         filterConvs();
         updateProgress()
+        lastCurrentUser = $currentUser;
     });
 
     function filterConvs(){
@@ -45,9 +46,6 @@
         await pb.collection("conversations").update(currentConversation.id, {"eval+":1});
         await pb.collection("users").update($currentUser.id, {"seen+": currentConversation.id});
         // set timeout 0.5s to let the progress bar update
-        setTimeout(() => {
-            updateProgress()
-        }, 200);
         //await updateProgress()
     }
 
@@ -55,11 +53,14 @@
     async function downVote() {
         await pb.collection("conversations").update(currentConversation.id, {"eval-":1});
         await pb.collection("users").update($currentUser.id, {"seen+": currentConversation.id});
-        setTimeout(() => {
-            updateProgress()
-        }, 200);
     }
 
+    $: {
+        if(lastCurrentUser !== $currentUser){
+            updateProgress();
+            lastCurrentUser = $currentUser;
+        }
+    }
 
 
     $: console.log(datasets);
