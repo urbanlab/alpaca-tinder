@@ -7,11 +7,11 @@
 	import { logout } from '../lib/utils/auth';
 	import VerifyBanner from '../lib/components/account/VerifyBanner.svelte';
 
-	onMount(async () => {
+	onMount(() => {
 		if (!$currentUser) {
 			goto('/account/login');
 		}
-		await watchUserChange();
+		//watchUserChange();
 	});
 
 

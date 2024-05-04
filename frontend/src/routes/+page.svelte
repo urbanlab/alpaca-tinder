@@ -22,7 +22,6 @@
     function filterConvs(){
         const userSeen = $currentUser.seen;
         currentDataset = datasets[datasetIndex];
-        currentConversation = datasets[datasetIndex].expand.conversations[convIndex];
         // filter out conversations that the user has already seen
         currentConversation = currentDataset.expand.conversations.find((conv) => !userSeen.includes(conv.id));
     }
@@ -30,12 +29,13 @@
     async function updateProgress(){
         const length = datasets[datasetIndex].expand.conversations.length;
         // only keep the seenid that are in the current dataset
-        userSeenLength = $currentUser.seen.filter((seenId) => datasets[datasetIndex].expand.conversations.map((conv) => conv.id).includes(seenId)).length;
+        const conversationsIds = datasets[datasetIndex].expand.conversations.map((conv) => conv.id)
+        userSeenLength = $currentUser.seen.filter((seenId) => conversationsIds.includes(seenId)).length;
         progress = (userSeenLength / length) * 100;
+        filterConvs();
     }
 
     async function changeDataset(){
-        filterConvs();
         await updateProgress();
     }
 
@@ -44,15 +44,20 @@
         console.log($currentUser);
         await pb.collection("conversations").update(currentConversation.id, {"eval+":1});
         await pb.collection("users").update($currentUser.id, {"seen+": currentConversation.id});
-        currentConversation = datasets[datasetIndex].expand.conversations[++convIndex];
-        await updateProgress()
+        // set timeout 0.5s to let the progress bar update
+        setTimeout(() => {
+            updateProgress()
+        }, 100);
+        //await updateProgress()
     }
 
+
     async function downVote() {
-        await pb.collection("conversations").update(currentConversation.id, {"eval+":1});
+        await pb.collection("conversations").update(currentConversation.id, {"eval-":1});
         await pb.collection("users").update($currentUser.id, {"seen+": currentConversation.id});
-        currentConversation = datasets[datasetIndex].expand.conversations[++convIndex];
-        await updateProgress()
+        setTimeout(() => {
+            updateProgress()
+        }, 100);
     }
 
 
@@ -76,22 +81,22 @@
     {#if currentConversation}
         <div>
                  <div class="chat chat-start">
-            <div class="chat-image avatar">
-                <div class="w-10 rounded-full">
-                <img alt="Tailwind CSS chat bubble component" src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+            <div class="chat-image avatar placeholder">
+                <div class="bg-neutral text-neutral-content rounded-full w-12">
+                    <span>U</span>
                 </div>
-            </div>
+            </div> 
             <div class="chat-header">
                 Utilisateurice
             </div>
             <div class="chat-bubble">{currentConversation.data.instruction}</div>
             </div>
             <div class="chat chat-end">
-            <div class="chat-image avatar">
-                <div class="w-10 rounded-full">
-                <img alt="Tailwind CSS chat bubble component" src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+            <div class="chat-image avatar placeholder">
+                <div class="bg-neutral text-neutral-content rounded-full w-12">
+                    <span>CB</span>
                 </div>
-            </div>
+                </div> 
             <div class="chat-header">
                 Chatbotmet
             </div>
