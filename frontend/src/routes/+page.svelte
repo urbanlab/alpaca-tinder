@@ -47,7 +47,7 @@
         // set timeout 0.5s to let the progress bar update
         setTimeout(() => {
             updateProgress()
-        }, 100);
+        }, 200);
         //await updateProgress()
     }
 
@@ -57,7 +57,7 @@
         await pb.collection("users").update($currentUser.id, {"seen+": currentConversation.id});
         setTimeout(() => {
             updateProgress()
-        }, 100);
+        }, 200);
     }
 
 
@@ -111,8 +111,8 @@
     {#if datasets}
         <div class="fixed bottom-0 w-full bg-base-300 pb-4">
             <div class="flex justify-center item-center mt-4">
-                <button class="p-4 mr-2 rounded-full bg-success" on:click={async () => upVote()}>👍</button>
-                <button class=" p-4 rounded-full bg-error" on:click={async () => downVote()}>👎</button>
+                <button class="p-4 mr-3 rounded-full bg-success active:scale-125" on:click={async () => upVote()}>👍</button>
+                <button class=" p-4 rounded-full bg-error active:scale-125" on:click={async () => downVote()}>👎</button>
             </div>
             <div class="flex justify-center item-center mt-4">
                 <progress class="progress progress-primary w-56" value={progress} max="100"></progress>

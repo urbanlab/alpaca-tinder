@@ -7,7 +7,7 @@
 	import { logout } from '../lib/utils/auth';
 	import VerifyBanner from '../lib/components/account/VerifyBanner.svelte';
 	import Fa from 'svelte-fa';
-	import { faBars, faHamburger } from '@fortawesome/free-solid-svg-icons';
+	import { faBars } from '@fortawesome/free-solid-svg-icons';
 
 	onMount(() => {
 		if (!$currentUser) {
