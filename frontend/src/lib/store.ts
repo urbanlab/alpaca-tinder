@@ -39,14 +39,14 @@ export async function watchUserChange(user:AuthModel) {
         if(userSub){
             userSub()
         }
-        const getUser = await pb.collection("users").getOne(user.id,{expand: "seen"});
+        const getUser = await pb.collection("users").getOne(user.id);
         currentUser.set(getUser);
         const currentUserId = get(currentUser).id
         if (get(currentUser).id) {
             // subscribe to the user data
             let unsubscribe = pb.collection("users").subscribe(user.id, async ({action,  record}) => {
                 if (action === "update") {
-                    const getUser = await pb.collection("users").getOne(user.id,{expand: "seen"});
+                    const getUser = await pb.collection("users").getOne(user.id);
                     console.log("user updated");
                     currentUser.set(getUser);
                 }
