@@ -43,7 +43,10 @@
 				<div class="flex items-center justify-center mb-8">
                     <p class="pl-4 uppercase text-1xl font-bold text-white">Alpaca Tinder</p>
                 </div>
-				<li><a on:click={logout}>Logout</a></li>
+				<li>
+					<a href="/dataset/export">Export</a>
+					<a on:click={logout}>Logout</a>
+				</li>
 				
 			  </ul>
 			</div>
