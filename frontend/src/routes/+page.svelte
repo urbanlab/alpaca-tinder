@@ -12,7 +12,9 @@
 	let datasetIndex = 0;
     let currentDataset:DatasetsResponse;
     let lastCurrentUser:UsersRecord;
+    let totalDatsetsLength = 0;
     let userSeenLength = 0;
+    let alreadyVote = false;
     onMount(async () => {
         datasets = await pb.collection("datasets").getFullList({expand: "conversations"});
         filterConvs();
@@ -25,19 +27,34 @@
         currentDataset = datasets[datasetIndex];
         // filter out conversations that the user has already seen
         currentConversation = currentDataset.expand.conversations.find((conv) => !userSeen.includes(conv.id));
+        if(alreadyVote){
+            console.log("alreadyVote filter");
+            // filter out conversations that have an eval above > 0
+            currentConversation = currentDataset.expand.conversations.find((conv) => !userSeen.includes(conv.id) && conv.eval > 0);
+        }
     }
 
     async function updateProgress(){
         const length = datasets[datasetIndex].expand.conversations.length;
+        totalDatsetsLength = length;
         // only keep the seenid that are in the current dataset
         const conversationsIds = datasets[datasetIndex].expand.conversations.map((conv) => conv.id)
         userSeenLength = $currentUser.seen.filter((seenId) => conversationsIds.includes(seenId)).length;
         progress = (userSeenLength / length) * 100;
+        if(alreadyVote){
+            const length = datasets[datasetIndex].expand.conversations.filter((conv) => conv.eval > 0).length;
+            totalDatsetsLength = length;
+            // only compare with the conversations that have an eval above 0
+            const conversationsIds = datasets[datasetIndex].expand.conversations.filter((conv) => conv.eval > 0).map((conv) => conv.id)
+            userSeenLength = $currentUser.seen.filter((seenId) => conversationsIds.includes(seenId)).length;
+            progress = (userSeenLength / length) * 100;
+        }
         filterConvs();
     }
 
     async function changeDataset(){
         await updateProgress();
+        alreadyVote = false;
     }
 
     async function upVote() {
@@ -53,6 +70,13 @@
     async function downVote() {
         await pb.collection("conversations").update(currentConversation.id, {"eval-":1});
         await pb.collection("users").update($currentUser.id, {"seen+": currentConversation.id});
+    }
+
+    async function refreshFilters(){
+        alreadyVote = !alreadyVote;
+        console.log(alreadyVote);
+        await filterConvs();
+        await updateProgress();
     }
 
     $: {
@@ -80,6 +104,12 @@
                 {/if}
                 {/each}
             </select>
+            <div class="divider"></div>
+            <div class="flex justify-center items-center mb-4">
+                <!-- Checkbox-->
+                <input type="checkbox" class="checkbox mr-2" id="checkbox" on:click={refreshFilters}>
+                <label for="checkbox">Filtrer par "Déjà voté"</label>
+            </div>
         {/if}
         {#if currentConversation}
             <div>
@@ -117,7 +147,7 @@
             </div>
             <div class="flex justify-center item-center mt-4">
                 <progress class="progress progress-primary w-56" value={progress} max="100"></progress>
-                <p class="text-center"> {userSeenLength}/ {datasets[datasetIndex].conversations?.length}</p>
+                <p class="text-center"> {userSeenLength}/ {totalDatsetsLength}</p>
             </div>
         </div>
     {/if}
